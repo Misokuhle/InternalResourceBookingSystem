@@ -54,7 +54,7 @@ namespace InternalResourceBookingSystem.Controllers
             {
                 _context.Add(resource);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = resource.Id });
             }
             return View(resource);
         }
