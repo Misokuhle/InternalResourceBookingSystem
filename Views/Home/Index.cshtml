@@ -1,8 +1,30 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mt-5">
+    <h1 class="display-4 fw-bold">Welcome to the Resource Booking System</h1>
+    <p class="lead mt-3">
+        This system helps you manage and reserve internal resources efficiently.
+        Use it to view, book, and track meeting rooms, equipment, or collaborative spaces.
+    </p>
+
+    <hr class="my-4" />
+
+    <div class="d-flex justify-content-center gap-4 mt-4 flex-wrap">
+        <a class="btn btn-primary btn-lg px-4" asp-controller="Bookings" asp-action="Index">
+            📅 View Bookings
+        </a>
+        <a class="btn btn-outline-dark btn-lg px-4" asp-controller="Resources" asp-action="Index">
+            🧾 View Resources
+        </a>
+        <a class="btn btn-success btn-lg px-4" asp-controller="Bookings" asp-action="Create">
+            ➕ Book Now
+        </a>
+    </div>
+
+    <div class="mt-5 text-muted">
+        <small>City of Johannesburg | Internal Use Only</small>
+    </div>
 </div>
+
