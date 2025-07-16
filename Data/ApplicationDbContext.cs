@@ -9,7 +9,8 @@ namespace InternalResourceBookingSystem.Data
         {
         
         }
-
-        //DbSets for Booking and Resource
+        //Tables for resources and bookings
+        public DbSet<Resource> Resources { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
     }
 }
