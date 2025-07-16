@@ -20,10 +20,21 @@ namespace InternalResourceBookingSystem.Controllers
         }
 
         // GET: Bookings
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, DateTime? date)
         {
-            var applicationDbContext = _context.Bookings.Include(b => b.Resource);
-            return View(await applicationDbContext.ToListAsync());
+            var bookings = _context.Bookings.Include(b => b.Resource).AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                bookings = bookings.Where(b => b.Resource.Name.Contains(searchString));
+            }
+
+            if (date.HasValue)
+            {
+                bookings = bookings.Where(b => b.StartTime.Date == date.Value.Date);
+            }
+
+            return View(await bookings.ToListAsync());
         }
 
         // GET: Bookings/Details/5
@@ -81,7 +92,7 @@ namespace InternalResourceBookingSystem.Controllers
             {
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = booking.Id });
             }
 
             ViewBag.ResourceList = new SelectList(_context.Resources.Where(r => r.IsAvailable), "Id", "Name", booking.ResourceId);
