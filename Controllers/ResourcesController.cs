@@ -20,9 +20,17 @@ namespace InternalResourceBookingSystem.Controllers
         }
 
         // GET: Resources
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Resources.ToListAsync());
+            var resources = from r in _context.Resources
+                            select r;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                resources = resources.Where(r => r.Name.Contains(searchString));
+            }
+
+            return View(await resources.ToListAsync());
         }
 
         // GET: Resources/Details/5
