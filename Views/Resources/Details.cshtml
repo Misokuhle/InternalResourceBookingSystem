@@ -1,47 +1,61 @@
 ﻿@model InternalResourceBookingSystem.Models.Resource
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Resource Details";
 }
 
-<h1>Details</h1>
+<h1>@Model.Name</h1>
 
 <div>
-    <h4>Resource</h4>
+    <h4>Details</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Location)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Capacity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Capacity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsAvailable)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsAvailable)
-        </dd>
+        <dt class="col-sm-2">Description</dt>
+        <dd class="col-sm-10">@Model.Description</dd>
+
+        <dt class="col-sm-2">Location</dt>
+        <dd class="col-sm-10">@Model.Location</dd>
+
+        <dt class="col-sm-2">Capacity</dt>
+        <dd class="col-sm-10">@Model.Capacity</dd>
+
+        <dt class="col-sm-2">Available</dt>
+        <dd class="col-sm-10">@(Model.IsAvailable ? "Yes" : "No")</dd>
     </dl>
 </div>
+
+<div>
+    <h4>Upcoming Bookings</h4>
+    @if (Model.Bookings != null && Model.Bookings.Any())
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Booked By</th>
+                    <th>Purpose</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var booking in Model.Bookings.OrderBy(b => b.StartTime))
+                {
+                    <tr>
+                        <td>@booking.BookedBy</td>
+                        <td>@booking.Purpose</td>
+                        <td>@booking.StartTime.ToString("g")</td>
+                        <td>@booking.EndTime.ToString("g")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p><em>No bookings for this resource yet.</em></p>
+    }
+</div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

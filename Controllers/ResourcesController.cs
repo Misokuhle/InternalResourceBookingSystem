@@ -28,17 +28,13 @@ namespace InternalResourceBookingSystem.Controllers
         // GET: Resources/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var resource = await _context.Resources
+                .Include(r => r.Bookings) // include related bookings
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (resource == null)
-            {
-                return NotFound();
-            }
+
+            if (resource == null) return NotFound();
 
             return View(resource);
         }
