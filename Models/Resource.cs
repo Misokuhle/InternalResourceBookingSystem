@@ -20,7 +20,7 @@ namespace InternalResourceBookingSystem.Models
         public bool IsAvailable { get; set; } = true;
 
         //Navigation property: One resource can have many bookings
-        public ICollection<Booking>? bookings { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
 
     }
 }
