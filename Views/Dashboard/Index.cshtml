@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1>Dashboard</h1>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Total Resources</div>
+            <div class="card-body">
+                <h2 class="card-title">@ViewBag.TotalResources</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Total Bookings</div>
+            <div class="card-body">
+                <h2 class="card-title">@ViewBag.TotalBookings</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Upcoming Bookings</h3>
+
+@if (ViewBag.UpcomingBookings != null && ((IEnumerable<InternalResourceBookingSystem.Models.Booking>)ViewBag.UpcomingBookings).Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <th>Booked By</th>
+                <th>Purpose</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in (IEnumerable<InternalResourceBookingSystem.Models.Booking>)ViewBag.UpcomingBookings)
+            {
+                <tr>
+                    <td>@booking.Resource.Name</td>
+                    <td>@booking.BookedBy</td>
+                    <td>@booking.Purpose</td>
+                    <td>@booking.StartTime.ToString("g")</td>
+                    <td>@booking.EndTime.ToString("g")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>No upcoming bookings.</em></p>
+}
+
+<h3>Today's Bookings</h3>
+
+@if (ViewBag.TodaysBookings != null && ((IEnumerable<InternalResourceBookingSystem.Models.Booking>)ViewBag.TodaysBookings).Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <th>Booked By</th>
+                <th>Purpose</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in (IEnumerable<InternalResourceBookingSystem.Models.Booking>)ViewBag.TodaysBookings)
+            {
+                <tr>
+                    <td>@booking.Resource?.Name</td>
+                    <td>@booking.BookedBy</td>
+                    <td>@booking.Purpose</td>
+                    <td>@booking.StartTime.ToString("t")</td>
+                    <td>@booking.EndTime.ToString("t")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>No bookings today.</em></p>
+}
+
