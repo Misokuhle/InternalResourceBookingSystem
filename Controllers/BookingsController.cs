@@ -101,7 +101,12 @@ namespace InternalResourceBookingSystem.Controllers
             {
                 return NotFound();
             }
-            ViewBag.ResourceList = new SelectList(_context.Resources.Where(r => r.IsAvailable), "Id", "Name", booking.ResourceId);
+
+            var resources = _context.Resources
+                .Where(r => r.IsAvailable || r.Id == booking.ResourceId)
+                .ToList();
+
+            ViewBag.ResourceId = new SelectList(resources, "Id", "Name", booking.ResourceId);
             return View(booking);
         }
 
@@ -119,6 +124,19 @@ namespace InternalResourceBookingSystem.Controllers
 
             if (ModelState.IsValid)
             {
+                // Check for time conflict with other bookings (excluding itself)
+                var conflict = await _context.Bookings
+                    .Where(b => b.ResourceId == booking.ResourceId && b.Id != booking.Id)
+                    .Where(b => booking.StartTime < b.EndTime && booking.EndTime > b.StartTime)
+                    .FirstOrDefaultAsync();
+
+                if (conflict != null)
+                {
+                    ModelState.AddModelError(string.Empty, "This resource is already booked during the selected time.");
+                    ViewData["ResourceId"] = new SelectList(_context.Resources.Where(r => r.IsAvailable), "Id", "Name", booking.ResourceId);
+                    return View(booking);
+                }
+
                 try
                 {
                     _context.Update(booking);
@@ -137,7 +155,8 @@ namespace InternalResourceBookingSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ResourceId"] = new SelectList(_context.Resources, "Id", "Name", booking.ResourceId);
+
+            ViewData["ResourceId"] = new SelectList(_context.Resources.Where(r => r.IsAvailable), "Id", "Name", booking.ResourceId);
             return View(booking);
         }
 
