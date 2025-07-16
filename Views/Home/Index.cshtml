@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Welcome";
+    ViewData["Title"] = "Internal Resource Booking";
 }
 
 <div class="text-center mt-5">
@@ -12,14 +12,16 @@
     <hr class="my-4" />
 
     <div class="d-flex justify-content-center gap-4 mt-4 flex-wrap">
-        <a class="btn btn-primary btn-lg px-4" asp-controller="Bookings" asp-action="Index">
+        <a class="btn btn-caramel btn-lg px-4" asp-controller="Bookings" asp-action="Index">
             📅 View Bookings
         </a>
-        <a class="btn btn-outline-dark btn-lg px-4" asp-controller="Resources" asp-action="Index">
+
+        <a class="btn btn-caramel btn-lg px-4" asp-controller="Resources" asp-action="Index">
             🧾 View Resources
         </a>
-        <a class="btn btn-success btn-lg px-4" asp-controller="Bookings" asp-action="Create">
-            ➕ Book Now
+
+        <a class="btn btn-caramel btn-lg px-4" asp-controller="Bookings" asp-action="Create">
+            <span style="color: white;">✚</span> Book Now
         </a>
     </div>
 
