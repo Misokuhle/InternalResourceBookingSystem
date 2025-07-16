@@ -48,24 +48,43 @@ namespace InternalResourceBookingSystem.Controllers
         // GET: Bookings/Create
         public IActionResult Create()
         {
-            ViewData["ResourceId"] = new SelectList(_context.Resources, "Id", "Name");
+            ViewBag.ResourceList = new SelectList(_context.Resources.Where(r => r.IsAvailable), "Id", "Name");
             return View();
         }
 
         // POST: Bookings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,ResourceId,StartTime,EndTime,BookedBy,Purpose")] Booking booking)
         {
+            // Validate times
+            if (booking.EndTime <= booking.StartTime)
+            {
+                ModelState.AddModelError("", "End time must be after start time.");
+            }
+
+            // Booking conflict check
+            var hasConflict = _context.Bookings.Any(b =>
+                b.ResourceId == booking.ResourceId &&
+                (
+                    (booking.StartTime >= b.StartTime && booking.StartTime < b.EndTime) ||
+                    (booking.EndTime > b.StartTime && booking.EndTime <= b.EndTime) ||
+                    (booking.StartTime <= b.StartTime && booking.EndTime >= b.EndTime)
+                ));
+
+            if (hasConflict)
+            {
+                ModelState.AddModelError("", "This resource is already booked during the selected time.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ResourceId"] = new SelectList(_context.Resources, "Id", "Name", booking.ResourceId);
+
+            ViewBag.ResourceList = new SelectList(_context.Resources.Where(r => r.IsAvailable), "Id", "Name", booking.ResourceId);
             return View(booking);
         }
 
@@ -82,7 +101,7 @@ namespace InternalResourceBookingSystem.Controllers
             {
                 return NotFound();
             }
-            ViewData["ResourceId"] = new SelectList(_context.Resources, "Id", "Name", booking.ResourceId);
+            ViewBag.ResourceList = new SelectList(_context.Resources.Where(r => r.IsAvailable), "Id", "Name", booking.ResourceId);
             return View(booking);
         }
 
